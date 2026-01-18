@@ -1,31 +1,26 @@
 import os
-# 注意这里导入的是 ChatOpenAI
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 
-# =================配置区域=================
-# 填入智谱的 API Key
-os.environ["ZHIPUAI_API_KEY"] = "你的智谱API_KEY"
-
 # =================1. 初始化模型 (使用 ChatOpenAI)=================
 llm = ChatOpenAI(
-    # 【关键点 1】智谱的 OpenAI 兼容接口地址
+    # 智谱的 OpenAI 兼容接口地址
     base_url="https://open.bigmodel.cn/api/paas/v4/", 
     
-    # 【关键点 2】使用智谱的 API Key
+    # 使用智谱的 API Key 且提前将API载入环境变量
     api_key=os.environ["ZHIPU_API_KEY"],
     
-    # 【关键点 3】指定智谱的模型名称
+    # 指定智谱的模型名称
     model="glm-4-flash",  
     
     temperature=0.5,
     streaming=True,
 )
 
-# =================2. 下面的代码与之前完全一致=================
+# =================2. 构建工作流=================
 # 构建 Prompt
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -54,9 +49,6 @@ conversation_chain = RunnableWithMessageHistory(
 
 # =================3. 运行测试=================
 if __name__ == "__main__":
-    # =================配置区域=================
-    # 填入智谱的 API Key
-    os.environ["ZHIPUAI_API_KEY"] = "你的智谱API_KEY"
 
     # =================1. 初始化模型 (使用 ChatOpenAI)=================
     llm = ChatOpenAI(
@@ -131,4 +123,5 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"\n[系统错误]: {e}")
             print("请检查网络或 API Key 设置。")
+
             break
